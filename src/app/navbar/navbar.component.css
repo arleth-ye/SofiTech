@@ -1,0 +1,75 @@
+:host ::ng-deep .p-menubar {
+  background-color: #edecec; /* Correspondre à la couleur de fond de la barre latérale */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 9999;
+  height: 5rem;
+  box-shadow: n0px 4px 6px 0px rgb(198, 205, 198); /* Supprimer l'ombre */
+  margin: 0; /* Supprimer les marges */
+  padding: 0; /* Supprimer le rembourrage */
+  border-radius: 0; /* Coins de bordure pleins */
+}
+
+:host ::ng-deep .p-toast {
+  box-shadow: 0px 4px 6px 0px rgb(198, 205, 198);
+  z-index: 10000; /* Utilisez une valeur élevée pour le z-index du toast */
+  top: 100px; /* Ajustez le décalage négatif en fonction de la hauteur de votre barre de navigation */
+}
+
+:host ::ng-deep .p-menuitem-text {
+  color: black !important;
+}
+
+:host ::ng-deep .p-submenu-icon {
+  color: black !important;
+}
+
+:host ::ng-deep .p-breadcrumb {
+  background-color: #fdfcfc !important;
+  display: flex;
+  justify-content: center;
+}
+:host ::ng-deep .p-breadcrumb ul li .p-menuitem-link .p-menuitem-text {
+  color: #fff !important;
+}
+:host ::ng-deep .p-breadcrumb ul li.p-breadcrumb-chevron {
+  color: #fff !important;
+}
+
+:host ::ng-deep .p-breadcrumb ul li:last-child .p-menuitem-text {
+  color: #fff !important;
+  font-weight: 600;
+}
+:host ::ng-deep .p-breadcrumb ul li .p-menuitem-link .p-menuitem-icon {
+  color: #fff !important;
+}
+
+.user-info {
+  display: flex;
+  align-items: center; /* Aligner verticalement */
+}
+
+.user-name {
+  margin-left: 10px; /* Marge à gauche pour l'espace entre l'image et le texte */
+}
+
+/* Dans votre fichier CSS (navbar.component.css) */
+.custom-menu-label {
+  width: 150px; /* Modifiez cette valeur selon vos préférences */
+}
+
+:host ::ng-deep .p-menubar .p-menuitem-link {
+  transition: background-color 0.5s ease;
+   /* Add transition for background color */
+}
+
+:host ::ng-deep .p-menubar .p-menuitem-link:hover {
+  background-color: #d3d2d2!important;
+ 
+}
+
+:host ::ng-deep .p-menubar .p-menubar-start {
+  margin-right: 1%; 
+}

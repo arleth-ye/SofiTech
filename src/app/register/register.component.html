@@ -1,0 +1,132 @@
+<p-card
+  ><app-navbar></app-navbar>
+  <div class="grid">
+    <div class="col-12 md:col-12 lg:col-6">
+      <div class="grid">
+        <div class="col-12 md:col-12 lg:col-4">
+          <p-image
+            src="https://primefaces.org/cdn/primeng/images/galleria/galleria1.jpg"
+            width="250"
+            alt="Image"
+            [preview]="true"
+          ></p-image>
+        </div>
+        <div class="col-12 md:col-12 lg:col-6">
+          <input
+            #fileInput
+            class="text-center w-full"
+            [style]="{ width: '100%' }"
+            type="file"
+            accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            placeholder="Enter file"
+          />
+        </div>
+        <div class="col-12 md:col-12 lg:col-2"></div>
+      </div>
+    </div>
+
+    <div class="col-12 md:col-12 lg:col-6">
+      <span class="p-float-label">
+        <input
+          pInputText
+          placeholder="Nom"
+          class="w-full"
+          [style]="{ width: '100%' }"
+        />
+        <label class="font-semibold">Nom</label>
+      </span>
+      <div class="col-fixed" style="height: 25px"></div>
+      <span class="p-float-label">
+        <input
+          pInputText
+          placeholder="Prénom"
+          class="w-full"
+          [style]="{ width: '100%' }"
+        />
+        <label class="font-semibold">Prénom</label>
+      </span>
+      <div class="col-fixed" style="height: 25px"></div>
+      <span class="p-float-label">
+        <p-dropdown
+          placeholder="Direction"
+          [showClear]="true"
+          optionLabel="name"
+          optionValue="name"
+          class="w-full"
+          [style]="{ width: '100%' }"
+        ></p-dropdown>
+        <label class="font-semibold">Direction</label>
+      </span>
+      <div class="col-fixed" style="height: 25px"></div>
+      <span class="p-float-label">
+        <input
+          pInputText
+          placeholder="Poste Occupé"
+          class="w-full"
+          [style]="{ width: '100%' }"
+        />
+        <label class="font-semibold">Poste Occupé</label>
+      </span>
+      <div class="col-fixed" style="height: 25px"></div>
+
+      <span class="p-float-label">
+        <input
+          pInputText
+          placeholder="Nom d'utilisateur"
+          class="w-full"
+          [style]="{ width: '100%' }"
+        />
+        <label class="font-semibold">Nom d'utilisateur</label>
+      </span>
+      <div class="col-fixed" style="height: 25px"></div>
+
+      <span class="p-float-label">
+        <input
+          type="password"
+          pInputText
+          placeholder="Mot de Passe"
+          class="w-full"
+          [style]="{ width: '100%' }"
+        />
+        <label class="font-semibold">Mot de Passe</label>
+      </span>
+      <div class="col-fixed" style="height: 25px"></div>
+      <span class="p-float-label">
+        <input
+          type="password"
+          pInputText
+          placeholder="Confirmer le Mot de Passe"
+          class="w-full"
+          [style]="{ width: '100%' }"
+        />
+        <label class="font-semibold">Confirmer Mot de Passe</label>
+      </span>
+    </div>
+  </div>
+
+  <div class="col-fixed" style="height: 60px"></div>
+  <div class="grid">
+    <div class="col-12 md:col-12 lg:col-3"></div>
+    <div class="col-12 md:col-12 lg:col-3">
+      <p-button
+        type="submit"
+        [style]="{ width: '100%' }"
+        icon="pi pi-user-plus"
+        severity="success"
+        label="Créer un Utilisateur"
+        class="w-full"
+      ></p-button>
+    </div>
+    <div class="col-12 md:col-12 lg:col-3">
+      <p-button
+        type="submit"
+        [style]="{ width: '100%' }"
+        icon="pi pi-times"
+        severity="danger"
+        label="Annuler"
+        class="w-full"
+      ></p-button>
+    </div>
+    <div class="col-12 md:col-12 lg:col-3"></div>
+  </div>
+</p-card>

@@ -1,0 +1,23 @@
+<p-toast></p-toast> <!-- for pop up messages and notifications :D-->
+
+<p-menubar [model]="items">
+  <ng-template pTemplate="start">
+      <img src="../../assets/wanaconsultinghd.png" height="80" />
+      
+  </ng-template>
+  <ng-template pTemplate="end">
+    <div class="user-info">
+      <div class="user-name">
+        <span> {{ nom }} {{ prenom }} </span>
+        <br />
+        <span> {{ poste }} </span>
+      </div>
+      &nbsp;
+      <img
+        src="../../assets/{{ photo }}"
+        height="50"
+        class="border-circle w-4rem h-4rem"
+      />
+    </div>
+  </ng-template>
+</p-menubar>

@@ -1,0 +1,260 @@
+<app-navbar></app-navbar>  
+<p-confirmDialog [style]="{width: '50vw'}" [visible]="showDialog_confirm"></p-confirmDialog>
+
+<p class="text-center">Montants des chèques en Instance d'Encaissement</p>
+           
+<p-table 
+#dt1  
+styleClass="p-datatable-gridlines p-datatable-striped" 
+[tableStyle]="{'min-width': '50rem'}"
+[paginator]="true"
+[rows]="5" 
+[value]="TrsEncArray" 
+[globalFilterFields]="['N_PCS','N_CHQ','OP','ENC','Date_chq','Date_depot','nom_cmpt']"
+[showCurrentPageReport]="true"
+currentPageReportTemplate=" {last} sur {totalRecords} "
+[rowsPerPageOptions]="[5,10, 15, 40]" 
+rowGroupMode="subheader"
+>
+
+<ng-template pTemplate="caption">
+
+    <div class="flex">
+        <button pButton label="Annuler" class=" p-button-outlined" icon="pi pi-filter-slash" (click)="clear()"></button>
+        <span class="p-input-icon-left ml-auto">
+            <i class="pi pi-search"></i>
+            <input pInputText (input)="dt1.filterGlobal($any($event.target).value, 'contains')" type="text" placeholder="Rechercher " />
+        </span>
+    </div>
+
+    
+    <div class="col-fixed" style="height:30px"></div> 
+
+
+    <div class="grid">  
+        <div class="p-inputgroup col-12 md:col-4 lg:col-4">   
+            <button  (click)="getMntChqTrsDate()"  type="submit" icon="pi pi-search" pButton ></button>
+            <input type="date" [(ngModel)]="DateFilter" class="w-full p-inputtext p-component" [style]="{'width':'100%'}" />
+           </div> 
+
+        <div class="p-inputgroup col-12 md:col-4 lg:col-4">   
+        
+            <button (click)="getMntChqTrsMonth()" type="submit" icon="pi pi-search" pButton ></button>
+            <input type="text" type="month"  [(ngModel)]="formattedMonthFilter" class="w-full p-inputtext p-component" [style]="{'width':'100%'}" />
+        </div>
+
+        <div class="p-inputgroup col-12 md:col-4 lg:col-4"> 
+            <button (click)="getMntChqTrsYear()" type="submit" icon="pi pi-search" pButton ></button>
+            <input type="number" min="1900" max="2099" step="1" [(ngModel)]="YearFilter" class="w-full p-inputtext p-component" [style]="{'width':'100%'}" />
+         </div>
+      
+     </div>
+     
+     
+     <div class="col-fixed" style="height:30px"></div> 
+     
+
+        <div class="grid">
+             
+            <div class="col-12 md:col-6 lg:col-4">   
+                 <button  [disabled]="isButtonDisabled" [disabled]="true" type="button" pButton pRipple icon="pi pi-file-excel" [style]="{'width':'100%'} "  class="w-full p-button-success mr-2 bt" pTooltip="Exporter en XLS" label="Exporter la Liste des Chèques en Instance d'Encaissement en EXCEL" tooltipPosition="bottom"></button>
+            </div> 
+            <div class="col-12 md:col-6 lg:col-4"> 
+                <button  [disabled]="isButtonDisabled" [disabled]="true" type="button" pButton pRipple icon="pi pi-file-import"  class="w-full p-button-help mr-2 bt" [style]="{'width':'100%'} " pTooltip="Importer XLS" label="Importer la Liste des Chèques en Instance d'Encaissement en EXCEL" tooltipPosition="bottom"></button>
+            </div>
+            <div class="col-12 md:col-6 lg:col-4"> 
+                <button  [disabled]="isButtonDisabled" type="button" (click)="showDialog()" pButton pRipple icon="pi pi-plus"  class="w-full p-button-Primary mr-2 bt" [style]="{'width':'100%'} " pTooltip="Ajouter un Chèque" label="Ajouter un Chèque en Instance d'Encaissement " tooltipPosition="bottom"></button>
+            </div>
+<!--dialog pour l'ajout-->
+
+<form [formGroup]="userForm" novalidate>
+<p-dialog 
+[baseZIndex]="10000"
+[modal]="true"
+[responsive]="true"
+header="Ajout d'une Opération" 
+[(visible)]="visible" 
+[breakpoints]="{'900px': '50vw',  '600px': '100vw'}"
+[draggable]="true" 
+[style]="{width: '60%'}">
+
+
+<div class="grid"> 
+<div class="col-fixed" style="height:20px"></div> 
+  
+<div class="col-12">  
+     <label  class="font-semibold">Date du Chèque</label> 
+    <input type="date" formControlName="Date_chq" [(ngModel)]="Date_chq" class="w-full p-inputtext p-component" [style]="{'width':'100%'}" />
+     <small class="p-error block" *ngIf="userForm.get('Date_chq')?.invalid && userForm.get('Date_chq')?.dirty">Obligatoire</small> 
+</div>  
+
+<div class="col-12">  
+ <label  class="font-semibold">Date de Dépôt</label> 
+<input type="date" [ngModelOptions]="{standalone: true}" [(ngModel)]="Date_depot" class="w-full p-inputtext p-component" [style]="{'width':'100%'}" />
+ </div> 
+
+
+<div class="col-fixed" style="height:20px"></div> 
+
+<div class="col-12"> 
+<span class="p-float-label">
+<input pInputText [(ngModel)]="N_CHQ" formControlName="N_CHQ" placeholder="Numéro de Chèque" class="w-full" [style]="{'width':'100%'}"/>
+<label class="font-semibold">Numéro de Chèque</label>
+<small class="p-error block" *ngIf="
+userForm.get('N_CHQ')?.invalid && userForm.get('N_CHQ')?.dirty
+">Obligatoire</small> 
+</span> 
+</div>
+
+
+
+
+<div class="col-fixed" style="height:20px"></div> 
+
+<div class="col-12"> 
+<span class="p-float-label">
+<input pInputText formControlName="OP" [(ngModel)]="OP" placeholder="Libéllé de l'Opération" class="w-full" [style]="{'width':'100%'}" />
+<label class="font-semibold">Libéllé de l'Opération</label>
+<small class="p-error block" *ngIf="
+userForm.get('OP')?.invalid && userForm.get('OP')?.dirty
+">Obligatoire</small> 
+</span> 
+</div>
+
+
+
+
+
+<div class="col-fixed" style="height:20px"></div> 
+
+<div class="col-12"> 
+<span class="p-float-label">
+<input pInputText formControlName="BNF" [(ngModel)]="BNF" class="w-full" [style]="{'width':'100%'}"/>
+<label class="font-semibold">Bénificiaires</label>
+<small class="p-error block" *ngIf="
+userForm.get('BNF')?.invalid && userForm.get('BNF')?.dirty
+">Obligatoire</small> 
+</span> 
+</div>
+<div class="col-fixed" style="height:25px"></div> 
+<div class="col-12"> 
+    <span class="p-float-label">
+    <p-dropdown [showClear]="true" formControlName="nom_cmpt" [(ngModel)]="nom_cmpt" [options]="bnq" optionLabel="name" optionValue="name" class="w-full" [style]="{'width':'100%'}" ></p-dropdown>
+    <label class="font-semibold">Banque</label>
+    <small class="p-error block" *ngIf="userForm.get('nom_cmpt')?.invalid && userForm.get('nom_cmpt')?.dirty">Obligatoire</small> 
+      
+</span> 
+</div>
+
+</div>
+
+<div class="col-fixed" style="height:25px"></div> 
+<div class="grid"> 
+
+<div class="col-12"> 
+<label class="font-semibold">Encaissements</label>   
+<p-inputNumber mode="decimal" [minFractionDigits]="2" [ngModelOptions]="{standalone: true}" [(ngModel)]="ENC" class="w-full" [style]="{'width':'100%'}"> </p-inputNumber>
+
+</div>  
+ 
+
+<!-- <div class="col-12 ">  
+ <label  class="font-semibold">Chèque en Instance d'Encaissement :</label> 
+<br><br>
+<p-checkbox name="groupname" value="val1" label="Oui" ></p-checkbox>
+&nbsp;  &nbsp;  &nbsp; 
+<p-checkbox name="groupname" value="val2" label="Non"></p-checkbox>
+
+</div>-->
+
+</div> 
+    <ng-template pTemplate="footer">
+      
+        <p-button [disabled]="userForm.invalid" type="submit" (click)="save()" icon="pi pi-check-circle" styleClass="p-button-success" label="Ajouter"></p-button> 
+      </ng-template>
+
+</p-dialog>
+</form>
+
+        </div>
+
+</ng-template>
+
+    <ng-template pTemplate="header">
+          <tr>  
+            <th style="width:20%" class="text-center">N° PCS</th>
+            <th style="width:20%" class="text-center">Date de Dépôt</th>
+            <th style="width:20%" class="text-center">N ° Chèque</th>
+            <th style="width:20%" class="text-center">Libellé de l'Opération </th>  
+            <th style="width:20%" class="text-center">Date du Chèque</th>  
+            <th style="width:20%" class="text-center">Montant</th>
+            <th style="width:20%" class="text-center">Banque</th>
+            <th style="width:20%" class="text-center">Validation</th>
+            <th style="width:20%" class="text-center">Modification</th>
+            <th style="width:20%" class="text-center"> Suppression</th>
+          </tr> 
+    </ng-template>
+
+    
+    <ng-template pTemplate="body" let-TrsEncArray >
+   
+        <tr [style.color]="  'black'">  
+            <td class="text-center">{{ TrsEncArray.N_PCS }}</td> 
+            <td class="text-center">
+                <ng-container *ngIf="TrsEncArray.Date_depot!== '0000-00-00'">
+                    {{ TrsEncArray.Date_depot | date : "dd - MM - yyyy" }}
+                  </ng-container>
+                  <ng-container *ngIf="TrsEncArray.Date_depot=== '0000-00-00'">
+                    Pas encore
+                  </ng-container>   
+                  <ng-container *ngIf="TrsEncArray.Date_depot === null">
+                    Pas encore
+                </ng-container>
+                </td> 
+
+            <td class="text-center">{{ TrsEncArray.N_CHQ }}</td> 
+            <td class="text-center">{{ TrsEncArray.OP }}</td> 
+            <td class="text-center">
+                
+                <ng-container *ngIf="TrsEncArray.Date_chq!== '0000-00-00'">
+                    {{ TrsEncArray.Date_chq | date : "dd - MM - yyyy" }}
+                  </ng-container>
+                  <ng-container *ngIf="TrsEncArray.Date_chq=== '0000-00-00' ">
+                    Pas encore
+                  </ng-container>  
+                  <ng-container *ngIf="TrsEncArray.Date_chq === null">
+                    Pas encore
+                </ng-container>
+                </td> 
+            <td class="text-center">{{ TrsEncArray.ENC | currency: 'DA' }}</td> 
+            <td class="text-center">
+                <ng-container *ngIf="TrsEncArray.nom_cmpt !== null">
+                    {{ TrsEncArray.nom_cmpt }}
+                </ng-container>
+                <ng-container *ngIf="TrsEncArray.nom_cmpt === null">
+                    Pas encore
+                </ng-container>
+            </td>  
+
+            <td class="text-center">
+                <p-button  [disabled]="isButtonDisabled" (click)="validate(TrsEncArray)" icon="pi pi-check" [rounded]="true" severity="success"></p-button>
+             </td> 
+             <td class="text-center">
+                <p-button  [disabled]="isButtonDisabled" (click)="Update(TrsEncArray)" icon="pi pi-pencil" [rounded]="true" severity="secondary"></p-button>
+             </td> 
+             <td class="text-center">
+                <p-button  [disabled]="isButtonDisabled" (click)="Delete(TrsEncArray)" icon="pi pi-trash" [rounded]="true" severity="danger"></p-button>
+             </td> 
+         </tr>
+
+        </ng-template>
+
+    <ng-template pTemplate="groupfooter" >
+        <tr [style.color]="  'black'" class="p-rowgroup-footer">
+            <td colspan="5" class="text-center"> TOTAL</td>   
+            <td style="width: 20%" class="text-center">{{total_ENC  | currency: 'DA'}}</td>
+            <td colspan="4" class="text-center"></td> 
+
+        </tr>
+    </ng-template>
+</p-table>

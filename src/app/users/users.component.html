@@ -1,0 +1,421 @@
+<app-navbar></app-navbar>
+
+<p class="text-center">Liste des Utilisateurs</p>
+
+<p-table
+  #dt1
+  styleClass="p-datatable-gridlines p-datatable-striped"
+  [tableStyle]="{ 'min-width': '50rem' }"
+  [paginator]="true"
+  [rows]="5"
+  [globalFilterFields]="[
+    'id',
+    'nom',
+    'prenom',
+    'direction',
+    'poste',
+    'username',
+    'CRUD'
+  ]"
+  [showCurrentPageReport]="true"
+  currentPageReportTemplate=" {last} sur {totalRecords} "
+  [rowsPerPageOptions]="[5, 10, 15, 40]"
+  rowGroupMode="subheader"
+  [value]="users"
+>
+  <ng-template pTemplate="caption">
+    <div class="flex">
+      <button
+        pButton
+        (click)="clear()"
+        label="Annuler"
+        class="p-button-outlined"
+        icon="pi pi-filter-slash"
+      ></button>
+
+      <span class="p-input-icon-left ml-auto">
+        <i class="pi pi-search"></i>
+        <input
+          pInputText
+          (input)="dt1.filterGlobal($any($event.target).value, 'contains')"
+          type="text"
+          placeholder="Rechercher "
+        />
+      </span>
+    </div>
+
+    <div class="col-fixed" style="height: 30px"></div>
+    <button
+      type="button"
+      [disabled]="isButtonDisabled"
+      (click)="showDialog()"
+      pButton
+      pRipple
+      icon="pi pi-plus"
+      class="w-full p-button-Primary mr-2 bt"
+      [style]="{ width: '100%' }"
+      label="Ajouter un Utilisateur "
+    ></button>
+    <form [formGroup]="userForm" novalidate>
+      <p-dialog
+        [baseZIndex]="10000"
+        [modal]="true"
+        [responsive]="true"
+        header="Ajouter un Utilisateur"
+        [(visible)]="visible"
+        [breakpoints]="{ '900px': '50vw', '600px': '100vw' }"
+        [draggable]="true"
+        [style]="{ width: '80%' }"
+      >
+        <div class="col-fixed" style="height: 20px"></div>
+        <div class="grid">
+          <div class="col-12 md:col-12 lg:col-6">
+            <div class="grid">
+              <div class="col-12 md:col-12 lg:col-4">
+                <p-image
+                  #imageElement
+                  [src]="imageUrl"
+                  width="250"
+                  alt="Image"
+                  [preview]="true"
+                ></p-image>
+              </div>
+
+              <div class="col-12 md:col-12 lg:col-2"></div>
+              <div class="col-12 md:col-12 lg:col-6">
+                <input
+                  #fileInput
+                  class="text-center w-full bt"
+                  [ngModelOptions]="{ standalone: true }"
+                  (change)="onFileSelected($event)"
+                  [(ngModel)]="photo"
+                  [style]="{ width: '100%' }"
+                  type="file"
+                  accept="image/jpeg, image/png"
+                  placeholder="Télécharger la photo de l'utilisateur"
+                />
+              </div>
+
+              <!---->
+              <div class="col-12">
+                <p-divider></p-divider>
+              </div>
+              <!---->
+
+              <div class="col-2">
+                <label class="font-semibold"><b>Profil:</b></label>
+              </div>
+              <!---->
+              <div class="col-2">
+                <label>Admin</label>
+              </div>
+              <div class="col-1">
+                <p-checkbox
+                  [(ngModel)]="admin"
+                  [ngModelOptions]="{ standalone: true }"
+                  [binary]="true"
+                ></p-checkbox>
+              </div>
+              <!---->
+              <div class="col-12">
+                <p-divider></p-divider>
+              </div>
+              <!---->
+
+              <div class="col-12">
+                <label class="font-semibold"
+                  ><b>Attribuer les droits d'accées :</b></label
+                >
+              </div>
+
+              <!---->
+              <div class="col-11">
+                <label
+                  >Tout les droits
+                  (Lecture,Ajout,Modification,Suppression)</label
+                >
+              </div>
+              <div class="col-1">
+                <p-checkbox
+                  [(ngModel)]="CRUD"
+                  [ngModelOptions]="{ standalone: true }"
+                  [binary]="true"
+                ></p-checkbox>
+              </div>
+
+              <!---->
+              <div class="col-4">
+                <label>Import des données</label>
+              </div>
+              <div class="col-1">
+                <p-checkbox
+                  [(ngModel)]="import"
+                  [ngModelOptions]="{ standalone: true }"
+                  [binary]="true"
+                  inputId="binary"
+                ></p-checkbox>
+              </div>
+              <!---->
+              <div class="col-6">
+                <label>Export de données</label>
+              </div>
+              <div class="col-1">
+                <p-checkbox
+                  [(ngModel)]="export"
+                  [ngModelOptions]="{ standalone: true }"
+                  [binary]="true"
+                  inputId="binary"
+                ></p-checkbox>
+              </div>
+              <!---->
+              <!---->
+              <div class="col-12">
+                <p-divider></p-divider>
+              </div>
+              <!---->
+
+              <div class="col-2">
+                <label class="font-semibold"><b>Menu:</b></label>
+                <!-- this part that makes it possible for the pages to change depending on the role -->
+              </div>
+              <!-- we can add more options , ( nse9siw fetta 3la les fonctionalites)-->
+              <div class="col-2">
+                <label>Add project</label>
+              </div>
+              <div class="col-1">
+                <p-checkbox
+                  [(ngModel)]="Add_project"
+                  [ngModelOptions]="{ standalone: true }"
+                  [binary]="true"
+                ></p-checkbox>
+              </div>
+              <!---->
+            </div>
+          </div>
+
+          <div class="col-12 md:col-12 lg:col-6">
+            <span class="p-float-label">
+              <input
+                pInputText
+                formControlName="nom"
+                [(ngModel)]="nom"
+                placeholder="Nom"
+                class="w-full"
+                [style]="{ width: '100%' }"
+              />
+              <label class="font-semibold">Nom</label>
+              <small
+                class="p-error block"
+                *ngIf="
+                  userForm.get('nom')?.invalid && userForm.get('nom')?.dirty
+                "
+                >Obligatoire</small
+              >
+            </span>
+
+            <div class="col-fixed" style="height: 35px"></div>
+            <span class="p-float-label">
+              <input
+                pInputText
+                formControlName="prenom"
+                [(ngModel)]="prenom"
+                placeholder="Prénom"
+                class="w-full"
+                [style]="{ width: '100%' }"
+              />
+              <label class="font-semibold">Prénom</label>
+              <small
+                class="p-error block"
+                *ngIf="
+                  userForm.get('prenom')?.invalid &&
+                  userForm.get('prenom')?.dirty
+                "
+                >Obligatoire</small
+              >
+            </span>
+            <div class="col-fixed" style="height: 35px"></div>
+            <span class="p-float-label">
+              <p-dropdown
+                [showClear]="true"
+                formControlName="direction"
+                [(ngModel)]="direction"
+                [options]="dir"
+                optionLabel="nom_direction"
+                optionValue="nom_direction"
+                class="w-full"
+                [style]="{ width: '100%' }"
+              ></p-dropdown>
+              <label class="font-semibold">Direction</label>
+              <small
+                class="p-error block"
+                *ngIf="
+                  userForm.get('direction')?.invalid &&
+                  userForm.get('direction')?.dirty
+                "
+                >Obligatoire</small
+              >
+            </span>
+            <div class="col-fixed" style="height: 35px"></div>
+            <span class="p-float-label">
+              <input
+                pInputText
+                formControlName="poste"
+                [(ngModel)]="poste"
+                placeholder="Poste Occupé"
+                class="w-full"
+                [style]="{ width: '100%' }"
+              />
+              <label class="font-semibold">Poste Occupé</label>
+              <small
+                class="p-error block"
+                *ngIf="
+                  userForm.get('poste')?.invalid && userForm.get('poste')?.dirty
+                "
+                >Obligatoire</small
+              >
+            </span>
+            <div class="col-fixed" style="height: 35px"></div>
+
+            <span class="p-float-label">
+              <input
+                pInputText
+                formControlName="username"
+                [(ngModel)]="username"
+                placeholder="Nom d'utilisateur"
+                class="w-full"
+                [style]="{ width: '100%' }"
+              />
+              <label class="font-semibold">Nom d'utilisateur</label>
+              <small
+                class="p-error block"
+                *ngIf="
+                  userForm.get('username')?.invalid &&
+                  userForm.get('username')?.dirty
+                "
+                >Obligatoire</small
+              >
+            </span>
+            <div class="col-fixed" style="height: 35px"></div>
+
+            <span class="p-float-label">
+              <p-password
+                [(ngModel)]="password"
+                formControlName="password"
+                [toggleMask]="true"
+                styleClass="p-password p-component p-inputwrapper p-input-icon-right"
+                [style]="{ width: '100%' }"
+                [inputStyle]="{ width: '100%' }"
+                class="W-full"
+              ></p-password>
+              <label class="font-semibold">Mot de Passe</label>
+              <small
+                class="p-error block"
+                *ngIf="
+                  userForm.get('password')?.invalid &&
+                  userForm.get('password')?.dirty
+                "
+                >Obligatoire</small
+              >
+            </span>
+          </div>
+        </div>
+
+        <ng-template pTemplate="footer">
+          <p-button
+            type="submit"
+            [disabled]="userForm.invalid"
+            (click)="save()"
+            icon="pi pi-user-plus"
+            styleClass="p-button-success"
+            label="Créer un Utilisateur"
+          ></p-button>
+        </ng-template>
+      </p-dialog>
+    </form>
+  </ng-template>
+
+  <ng-template pTemplate="header">
+    <tr>
+      <th class="text-center">ID</th>
+      <th class="text-center">Photo</th>
+      <th class="text-center">Nom</th>
+      <th class="text-center">Prénom</th>
+      <th class="text-center">Nom d'Utilisateur</th>
+      <th class="text-center">Mot de Passe</th>
+      <th class="text-center">direction</th>
+      <th class="text-center">Poste Occupé</th>
+      <th class="text-center">Droits d'accées</th>
+      <th class="text-center">Droits d'Import</th>
+      <th class="text-center">Droits d'Export</th>
+      <th class="text-center">Activation Compte</th>
+      <th class="text-center">Modification</th>
+      <th class="text-center">Suppression</th>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="body" let-users>
+    <tr [style.color]="'black'">
+      <td class="text-center">{{ users.id }}</td>
+      <td class="text-center">
+        <img
+          src="/assets/{{ users.photo }}"
+          height="80px"
+          width="80px"
+          x="840"
+          y="90"
+        />
+      </td>
+      <td class="text-center">{{ users.nom }}</td>
+      <td class="text-center">{{ users.prenom }}</td>
+      <td class="text-center">{{ users.username }}</td>
+      <td class="text-center">{{ users.password }}</td>
+      <td class="text-center">{{ users.direction }}</td>
+      <td class="text-center">{{ users.poste }}</td>
+      <td class="text-center">
+        <ng-container *ngIf="users.CRUD === 0">
+          Lecture Seulement
+        </ng-container>
+        <ng-container *ngIf="users.CRUD === 1"> Tout les Droits </ng-container>
+      </td>
+
+      <td class="text-center">
+        <ng-container *ngIf="users.import === 0"> Non </ng-container>
+        <ng-container *ngIf="users.import === 1"> Oui </ng-container>
+      </td>
+      <td class="text-center">
+        <ng-container *ngIf="users.export === 0"> Non </ng-container>
+        <ng-container *ngIf="users.export === 1"> Oui </ng-container>
+      </td>
+
+      <td class="text-center">
+        <p-toggleButton
+          [disabled]="isButtonDisabled"
+          [ngModel]="compteActivated[users.id]"
+          (ngModelChange)="toggleCompte(users.id, users.compte)"
+          [onLabel]="getButtonLabel(users.compte)"
+          [offLabel]="getButtonLabel(users.compte)"
+          [ngClass]="getButtonColor(users.compte)"
+        >
+        </p-toggleButton>
+      </td>
+      <td class="text-center">
+        <p-button
+          [disabled]="isButtonDisabled"
+          icon="pi pi-pencil"
+          (click)="Update(users)"
+          [rounded]="true"
+          severity="secondary"
+        ></p-button>
+      </td>
+      <td class="text-center">
+        <p-button
+          [disabled]="isButtonDisabled"
+          icon="pi pi-trash"
+          (click)="Delete(users)"
+          [rounded]="true"
+          severity="danger"
+        ></p-button>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>

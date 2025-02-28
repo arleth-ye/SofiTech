@@ -1,0 +1,49 @@
+<app-navbar></app-navbar>
+
+<p class="text-center">Journal d'Activité</p>
+
+<p-table 
+#dt1  
+styleClass="p-datatable-gridlines p-datatable-striped" 
+[tableStyle]="{'min-width': '50rem'}" 
+[paginator]="true"
+[rows]="5"
+[showCurrentPageReport]="true"
+currentPageReportTemplate=" {last} sur {totalRecords} "
+[rowsPerPageOptions]="[5,10, 15, 40]" 
+rowGroupMode="subheader"
+[globalFilterFields]="['N_CHQ','Date', 'nom_cmpt']"
+>
+
+<ng-template pTemplate="caption">
+    <div class="flex"> 
+        <span class="p-input-icon-left ml-auto">
+            <i class="pi pi-search"></i>
+            <input pInputText (input)="dt1.filterGlobal($any($event.target).value, 'contains')" type="text" placeholder="Recherche...."  />
+        </span> 
+    </div>
+
+     
+    
+    
+</ng-template>
+
+    <ng-template pTemplate="header">
+          <tr>  
+            <th style="width:20%" class="text-center">Utilisateur</th>
+            <th style="width:20%" class="text-center">Opération Effectué</th>
+            <th style="width:20%" class="text-center">Date d'Opération </th>  
+          </tr> 
+    </ng-template>
+
+    <ng-template pTemplate="body" >
+   
+        <tr [style.color]="'black'">
+            <td class="text-center"></td> 
+          
+         </tr>
+
+        </ng-template>
+
+ 
+</p-table>

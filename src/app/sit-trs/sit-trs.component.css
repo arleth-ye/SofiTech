@@ -1,0 +1,30 @@
+
+p{
+    color: rgb(255, 255, 255);
+    font-size: 25px;
+    font-weight: bold;
+  } 
+  ::selection {
+    color: red;
+    background: yellow;
+  }
+  
+:host ::ng-deep .p-datatable { 
+	box-shadow: 0px 4px 6px 0px rgb(198, 205, 198);
+  border-radius: 10px; /* Ajustez la valeur pour définir le rayon de courbure souhaité */
+  overflow: hidden; /* Assurez-vous que le contenu est masqué s'il dépasse les coins arrondis */
+    
+}  
+
+
+.toggle-danger /deep/ .p-togglebutton {
+  background-color: #dc3545 !important; /* Rouge, couleur de danger de PrimeNG */
+  border-color: #dc3545 !important;
+  color: #fff !important;
+}
+
+.toggle-success /deep/ .p-togglebutton {
+  background-color: #28a745 !important; /* Vert, couleur de succès de PrimeNG */
+  border-color: #28a745 !important;
+  color: #fff !important;
+}
